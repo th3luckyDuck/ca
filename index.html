@@ -5,7 +5,17 @@
   let sim = new altspace.utilities.Simulation();
   let scale = 5;
   let alexanswer = new THREE.Mesh(new THREE.BoxBufferGeometry(15 * scale, 10 * scale, 15 * scale), new THREE.MeshBasicMaterial({ map: altspaceutil.loadTexture('http://duckluck.net/ca/ca.jpg'), side: THREE.DoubleSide }));
+  altspaceutil.setCursorCollider(alexanswer, true);
   sim.scene.add(alexanswer);
+  alexanswer.addEventListener('n-sound-loaded', event => {
+    if(alexanswer.userData.loaded) return;
+    alexanswer.userData.loaded = true;
+
+    let nsoundcomponent = alexanswer.getBehaviorByType('n-sound');
+    alexanswer.addEventListener('cursorup', event => {
+      nsoundcomponent.data.volume = nsoundcomponent.data.volume > 0 ? 0 : 0.5;
+    });
+  });
   alexanswer.addBehaviors(
     new altspaceutil.behaviors.NativeComponent('n-sound', {
       src: 'http://duckluck.net/ca/ASVRTownHall.wav',
@@ -14,7 +24,7 @@
       volume: 1.2,
       minDistance: 5,
       maxDistance: 11,
-    }),
+    }, { useCollider: true }),
     new class {
       awake(o) {
         this.object3d = o;
@@ -51,7 +61,7 @@
 
           this.nTextComponent.data.text = 'Days until the end of the SDK:\n' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
         } else {
-          this.nTextComponent.data.text = 'DOOOOOOOOOOOOOOOOOOOOOOOOOOOM';
+          this.nTextComponent.data.text = 'Make AltspaceVR great again!';
         }
       }
     }
