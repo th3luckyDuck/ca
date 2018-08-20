@@ -38,11 +38,11 @@
 
   let countdowntimer = new THREE.Object3D();
   sim.scene.add(countdowntimer);
-  countdowntimer.position.y = 100;
-  countdowntimer.scale.multiplyScalar(50);
+  countdowntimer.position.y = 60;
+  countdowntimer.scale.multiplyScalar(40);
   countdowntimer.addBehaviors(
     new altspaceutil.behaviors.NativeComponent('n-text', { fontSize: 3, width: 100 }),
-    new altspaceutil.behaviors.NativeComponent('n-billboard'),
+    //new altspaceutil.behaviors.NativeComponent('n-billboard'),
     new class {
       awake(o) {
         this.nTextComponent = o.getBehaviorByType('n-text');
@@ -65,6 +65,15 @@
         }
       }
     }
+  );
+
+  let mutetext = new THREE.Object3D();
+  sim.scene.add(mutetext);
+  mutetext.position.y = 40;
+  mutetext.scale.multiplyScalar(20);
+  mutetext.addBehaviors(
+    new altspaceutil.behaviors.NativeComponent('n-text', { text: 'Click to mute/unmute', fontSize: 3, width: 100 }),
+    //new altspaceutil.behaviors.NativeComponent('n-billboard'),
   );
 </script>
 </body>
