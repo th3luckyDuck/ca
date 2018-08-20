@@ -2,29 +2,60 @@
 <title>Town Hall</title>
 <script src="https://cdn.jsdelivr.net/combine/npm/three@0.95.0/build/three.min.js,npm/altspace@2.9.0/dist/altspace.min.js,npm/altspacevr-behaviors@1.0.9/js/altspaceutil.min.js"></script>
 <script>
-    let sim = new altspace.utilities.Simulation();
-    let scale = 5;
-    let alexanswer = new THREE.Mesh(new THREE.BoxBufferGeometry(15 * scale, 10 * scale, 15 * scale), new THREE.MeshBasicMaterial({ map: altspaceutil.loadTexture('ca.jpg'), side: THREE.DoubleSide }));
-    sim.scene.add(alexanswer);
-    alexanswer.addBehaviors(
-        new altspaceutil.behaviors.NativeComponent('n-sound', {
-            src: 'ASVRTownHall.wav',
-            autoplay: true,
-            loop: true,
-            volume: 1.2,
-            minDistance: 5,
-            maxDistance: 11,
-        }),
-        new class {
-            awake(o) {
-                this.object3d = o;
-            }
+  let sim = new altspace.utilities.Simulation();
+  let scale = 5;
+  let alexanswer = new THREE.Mesh(new THREE.BoxBufferGeometry(15 * scale, 10 * scale, 15 * scale), new THREE.MeshBasicMaterial({ map: altspaceutil.loadTexture('http://duckluck.net/ca/ca.jpg'), side: THREE.DoubleSide }));
+  sim.scene.add(alexanswer);
+  alexanswer.addBehaviors(
+    new altspaceutil.behaviors.NativeComponent('n-sound', {
+      src: 'http://duckluck.net/ca/ASVRTownHall.wav',
+      autoplay: true,
+      loop: true,
+      volume: 1.2,
+      minDistance: 5,
+      maxDistance: 11,
+    }),
+    new class {
+      awake(o) {
+        this.object3d = o;
+      }
 
-            update(deltaTime) {
-                this.object3d.rotation.y += deltaTime * 0.0002;
-            }
+      update(deltaTime) {
+        this.object3d.rotation.y += deltaTime * 0.0002;
+      }
+    }
+  );
+
+  let countdowntimer = new THREE.Object3D();
+  sim.scene.add(countdowntimer);
+  countdowntimer.position.y = 100;
+  countdowntimer.scale.multiplyScalar(50);
+  countdowntimer.addBehaviors(
+    new altspaceutil.behaviors.NativeComponent('n-text', { fontSize: 3, width: 100 }),
+    new altspaceutil.behaviors.NativeComponent('n-billboard'),
+    new class {
+      awake(o) {
+        this.nTextComponent = o.getBehaviorByType('n-text');
+        this.countDownDate = new Date("Oct 16, 2018 00:00:00").getTime();
+      }
+
+      update(deltaTime) {
+        let now = new Date().getTime();
+        let distance = this.countDownDate - now;
+
+        if(distance > 0) {
+          let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+          this.nTextComponent.data.text = 'Days until the end of the SDK:\n' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+        } else {
+          this.nTextComponent.data.text = 'DOOOOOOOOOOOOOOOOOOOOOOOOOOOM';
         }
-    );
+      }
+    }
+  );
 </script>
 </body>
 </html>
